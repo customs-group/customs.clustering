@@ -11,7 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package simhash;
+package clustering.simhash;
 
 
 import net.openhft.hashing.LongHashFunction;
@@ -37,7 +37,12 @@ public class SimHash {
      */
     private final int hashbits;
 
-    private int numSegs;
+    /**
+     * Used to split the signature into segments.
+     * Should be 1 bigger than hamming distance's threshold.
+     * Default value is 4, according to hamming distance's default threshold 3.
+     */
+    private int numSegs = 4;
 
     //~ Constructors -----------------------------------------------------------
 
@@ -74,6 +79,12 @@ public class SimHash {
         this.hashCode = fingerprint;
     }
 
+    private SimHash(String tokens, long hashCode, int hashbits) {
+        this.tokens = tokens;
+        this.hashCode = hashCode;
+        this.hashbits = hashbits;
+    }
+
     //~ Methods ----------------------------------------------------------------
 
     public String getTokens() {
@@ -92,22 +103,42 @@ public class SimHash {
         return String.format("%64s", Long.toBinaryString(this.hashCode)).replace(' ', '0');
     }
 
-    public String[] getSegments(int segmentNumber) {
-        return getSegments(this.hashCode, segmentNumber);
+    public void setNumSegs(int numSegs) {
+        this.numSegs = numSegs;
     }
 
-    private static String[] getSegments(long signature, int segmentNumber) {
-        String[] result = new String[segmentNumber];
-
-        // TODO: 2016/12/10 hard code 64 is not good
-        String strSig = String.format("%64s", Long.toBinaryString(signature)).replace(' ', '0');
-        int segmentLength = 64 / segmentNumber;
-        for (int i = 0; i < segmentNumber; i++) {
-            String tmp = strSig.substring(i * segmentLength, (i + 1) * segmentLength - 1);
-            result[i] = tmp;
+    /**
+     * Get the i's segment of the signature.
+     * Segments start from 1
+     *
+     * @param i
+     * @return
+     */
+    public String getSegment(int i) {
+        assert i > 0 && i <= this.numSegs : "segment index error, should be in range [1, " + this.numSegs + "]";
+        int segmentLength = this.hashbits / this.numSegs;
+        if (this.hashbits % this.numSegs != 0) {
+            segmentLength++;
         }
-        return result;
+        return this.getBinHashCode().substring((i - 1) * segmentLength, Math.min(i * segmentLength, this.hashbits));
     }
+//
+//    public String[] getSegments(int segmentNumber) {
+//        return getSegments(this.hashCode, segmentNumber);
+//    }
+//
+//    private static String[] getSegments(long signature, int segmentNumber) {
+//        String[] result = new String[segmentNumber];
+//
+//        // TODO: 2016/12/10 hard code 64 is not good
+//        String strSig = String.format("%64s", Long.toBinaryString(signature)).replace(' ', '0');
+//        int segmentLength = 64 / segmentNumber;
+//        for (int i = 0; i < segmentNumber; i++) {
+//            String tmp = strSig.substring(i * segmentLength, (i + 1) * segmentLength - 1);
+//            result[i] = tmp;
+//        }
+//        return result;
+//    }
 
 
     //~ Builder ----------------------------------------------------------------
@@ -137,6 +168,10 @@ public class SimHash {
 
         public SimHash build() {
             return new SimHash(_tokens, _splitter, _hashbits);
+        }
+
+        public SimHash build(long _hashCode) {
+            return new SimHash(_tokens, _hashCode, _hashbits);
         }
     }
 }

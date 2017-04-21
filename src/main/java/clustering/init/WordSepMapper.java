@@ -11,7 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package init;
+package clustering.init;
 
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
@@ -71,7 +71,7 @@ public class WordSepMapper extends Mapper<LongWritable, Text, Text, Text> {
     }
 
     /**
-     * Read the input file, extract the good's info, and split the words
+     * Read the input file, extract the commodity info, and split the words
      * in g_name and g_model.
      *
      * @param key   position

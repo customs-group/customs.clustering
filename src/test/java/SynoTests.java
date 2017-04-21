@@ -28,7 +28,7 @@ public final class SynoTests {
             System.out.println(term.getName() + "\t" + (term.getSynonyms()));
         }
 
-        System.out.println("-------------init library------------------");
+        System.out.println("-------------clustering.init library------------------");
 
         for (Term term : ToAnalysis.parse(str).recognition(synonymsRecgnition)) {
             System.out.println(term.getName() + "\t" + (term.getSynonyms()));

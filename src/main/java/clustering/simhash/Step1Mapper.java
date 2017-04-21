@@ -11,7 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package simhash;
+package clustering.simhash;
 
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
@@ -53,10 +53,9 @@ public class Step1Mapper extends Mapper<Text, Text, LongWritable, Text> {
 
         this.outputKey.set(signature.getHashCode());
         this.outputValue.set(key.toString() + "::" + nameAndModel);
-        // simhash \t entry_id@@g_no::g_name##g_model
+        // simhash in long \t entry_id@@g_no::g_name##g_model
         context.write(this.outputKey, this.outputValue);
     }
-
 }
 
 // End Step1Mapper.java
