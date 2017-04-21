@@ -1,10 +1,9 @@
 import org.junit.Test;
+import simhash.SimHash;
 
+import java.math.BigInteger;
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -67,6 +66,35 @@ public final class UtilTests {
 
         String res = replaceV2(text, map);
         System.out.println(res);  // hello Lucy, welcome to China! China is very beautiful
+    }
+
+    @Test
+    public void simhashTest() {
+        String aaa = "hello Lucy, welcome to China!";
+        SimHash simHash1 = SimHash.Builder.of(aaa).build();
+
+        for (int i = 0; i < 64; i++)
+            System.out.print(1);
+        System.out.println();
+        System.out.println(simHash1.getBinHashCode());
+
+    }
+
+    @Test
+    public void bench() {
+        long start1 = System.currentTimeMillis();
+        for (int i = 0; i < 100000000; i++) {
+            String a = String.format("%64s", Long.toBinaryString(1L)).replace(' ', '0');
+        }
+        long end1 = System.currentTimeMillis();
+
+        long start2 = System.currentTimeMillis();
+        for (int i = 0; i < 100000000; i++) {
+            String b = String.format("%064d", new BigInteger(Long.toBinaryString(1L)));
+        }
+        long end2 = System.currentTimeMillis();
+
+        System.out.println("time1: " + (end1 - start1) / 1000 + ", time2: " + (end2 - start2) / 1000);
     }
 
 }

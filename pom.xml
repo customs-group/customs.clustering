@@ -39,6 +39,18 @@
             <artifactId>hadoop-mapreduce-client-common</artifactId>
             <version>3.0.0-alpha2</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.hadoop/hadoop-hdfs -->
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-hdfs</artifactId>
+            <version>3.0.0-alpha2</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/net.openhft/zero-allocation-hashing -->
+        <dependency>
+            <groupId>net.openhft</groupId>
+            <artifactId>zero-allocation-hashing</artifactId>
+            <version>0.8</version>
+        </dependency>
 
 
         <!-- https://mvnrepository.com/artifact/junit/junit -->
