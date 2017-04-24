@@ -20,11 +20,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by edwardlol on 17-4-21.
+ * Abstraction for signature pool.
+ * The string key stands for the segment content for this segment.
+ * And the value map is a full record of each document, whose key stands for the document's
+ * signature, and the value refers to which group this document belongs.
+ *
+ * @author edwardlol
+ *         Created by edwardlol on 17-4-21.
  */
 public class SigPool extends ArrayList<Map<String, Map<Long, Integer>>> {
-
-    //~ Instance fields --------------------------------------------------------
 
     //~ Constructors -----------------------------------------------------------
 
@@ -75,13 +79,15 @@ public class SigPool extends ArrayList<Map<String, Map<Long, Integer>>> {
         for (int i = 0; i < this.size(); i++) {
 
             String segment = simHash.getSegment(i + 1);
-            Map<String, Map<Long, Integer>> map = this.get(i);
+            Map<String, Map<Long, Integer>> seg_i = this.get(i);
 
-            Map<Long, Integer> _map = map.containsKey(segment) ? map.get(segment) : new HashMap<>();
-            _map.put(simHash.getHashCode(), id);
-            map.put(segment, _map);
+            Map<Long, Integer> items = seg_i.containsKey(segment) ? seg_i.get(segment) : new HashMap<>();
+            items.put(simHash.getHashCode(), id);
+            seg_i.put(segment, items);
         }
     }
+
+
 }
 
 // End SigPool.java
