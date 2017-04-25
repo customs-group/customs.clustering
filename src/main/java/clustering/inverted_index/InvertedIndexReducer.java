@@ -61,7 +61,7 @@ public class InvertedIndexReducer extends Reducer<Text, Text, Text, Text> {
         }
         this.decimalFormat = new DecimalFormat(stringBuilder.toString());
         this.pruning = conf.getBoolean("pruning", false);
-        this.pruningThreshold = conf.getDouble("pruning.threshold", 0.1d);
+        this.pruningThreshold = conf.getDouble("pruning.threshold", 0.001d);
     }
 
     /**

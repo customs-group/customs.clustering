@@ -15,25 +15,20 @@ package clustering.tf_idf;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
-import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapreduce.Job;
-import org.apache.hadoop.mapreduce.Mapper;
-import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
-import org.apache.hadoop.mapreduce.lib.input.KeyValueTextInputFormat;
 import org.apache.hadoop.mapreduce.lib.jobcontrol.ControlledJob;
 import org.apache.hadoop.mapreduce.lib.jobcontrol.JobControl;
-import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
-
-import java.net.URI;
 
 import static clustering.Utils.MapReduceUtils.initConf;
 import static clustering.Utils.MapReduceUtils.runJobs;
 
 /**
- * Created by edwardlol on 17-4-24.
+ * Calculate the tf-idf of every term in each document.
+ *
+ * @author edwardlol
+ *         Created by edwardlol on 17-4-24.
  */
 public class Driver extends Configured implements Tool {
     //~  Methods ---------------------------------------------------------------
@@ -42,86 +37,56 @@ public class Driver extends Configured implements Tool {
     public int run(String[] args) throws Exception {
         if (args.length < 2) {
             System.err.printf("usage: %s simhash_result_dir output_dir " +
-                            "[gname_weight] [num_reduce_tasks]\n", getClass().getSimpleName());
+                    "[gname_weight]\n", getClass().getSimpleName());
             System.exit(1);
         }
 
-        Path docCntDir = new Path(args[1] + "/docCount");
-        Path step1_outputDir = new Path(args[1] + "/step1");
-        Path step2_outputDir = new Path(args[1] + "/step2");
-        Path step3_outputDir = new Path(args[1] + "/result");
+        String docCntDir = args[1] + "/docCnt";
+        String step1_outputDir = args[1] + "/step1";
+        String step2_outputDir = args[1] + "/step2";
+        String step3_outputDir = args[1] + "/result";
 
         Configuration conf = getConf();
         conf = initConf(conf);
 
-        String gnameWeight = args.length > 2 ? args[2] : "1.0";
-        conf.setDouble("gname.weight", Double.valueOf(gnameWeight));
-
-        String numReduceTasks = args.length > 3 ? args[3] : "5";
-        conf.setInt("num.reduce.tasks", Integer.valueOf(numReduceTasks));
-
         JobControl jobControl = new JobControl("tf-idf jobs");
 
         /* pre step, count documents number in the corpus */
+        DocCntDriver docCntDriver = new DocCntDriver();
+        String[] preJobArgs = new String[2];
+        preJobArgs[0] = args[0];
+        preJobArgs[1] = docCntDir;
 
-        Job preJob = Job.getInstance(conf, "tf idf pre step");
-        preJob.setJarByClass(Driver.class);
-
-        FileInputFormat.addInputPath(preJob, new Path(args[0]));
-        FileOutputFormat.setOutputPath(preJob, docCntDir);
-
-        preJob.setMapperClass(DocCntMapper.class);
-        preJob.setCombinerClass(DocCntReducer.class);
-
-        preJob.setReducerClass(DocCntReducer.class);
-        preJob.setOutputKeyClass(NullWritable.class);
-        preJob.setOutputValueClass(IntWritable.class);
+        Job preJob = docCntDriver.configJob(preJobArgs);
 
         ControlledJob controlledPreJob = new ControlledJob(conf);
         controlledPreJob.setJob(preJob);
         jobControl.addJob(controlledPreJob);
 
         /* step 1, calculate term count of each document */
-
-        Job job1 = Job.getInstance(conf, "tf idf step1 job");
-        job1.setJarByClass(Driver.class);
-
-        FileInputFormat.addInputPath(job1, new Path(args[0]));
-        job1.setInputFormatClass(KeyValueTextInputFormat.class);
-
-        job1.setMapperClass(TermCountMapper.class);
-        job1.setMapOutputKeyClass(Text.class);
-        job1.setMapOutputValueClass(IntWritable.class);
-
-        job1.setCombinerClass(TermCountReducer.class);
-
-        job1.setReducerClass(TermCountReducer.class);
-        job1.setOutputKeyClass(Text.class);
-        job1.setOutputValueClass(IntWritable.class);
-
-        FileOutputFormat.setOutputPath(job1, step1_outputDir);
+        TermCntDriver termCntDriver = new TermCntDriver();
+        String[] job1Args = new String[2];
+        job1Args[0] = args[0];
+        job1Args[1] = step1_outputDir;
+        Job job1 = termCntDriver.configJob(job1Args);
 
         ControlledJob controlledJob1 = new ControlledJob(conf);
         controlledJob1.setJob(job1);
         jobControl.addJob(controlledJob1);
 
         /* step 2, calculate the term frequency of each document */
+        TermFreqDriver termFreqDriver = new TermFreqDriver();
 
-        Job job2 = Job.getInstance(conf, "tf idf step2 job");
-        job2.setJarByClass(Driver.class);
+        String gnameWeight = args.length > 2 ? args[2] : "1.0";
+        conf.setDouble("gname.weight", Double.valueOf(gnameWeight));
 
-        FileInputFormat.addInputPath(job2, step1_outputDir);
-        job2.setInputFormatClass(KeyValueTextInputFormat.class);
-
-        job2.setMapperClass(TermFrequencyMapper.class);
-        job2.setMapOutputKeyClass(IntWritable.class);
-        job2.setMapOutputValueClass(Text.class);
-
-        job2.setReducerClass(TermFrequencyReducer.class);
-        job2.setOutputKeyClass(Text.class);
-        job2.setOutputValueClass(Text.class);
-
-        FileOutputFormat.setOutputPath(job2, step2_outputDir);
+        String[] job2Args = args.length > 2 ? new String[3] : new String[2];
+        job2Args[0] = step1_outputDir;
+        job2Args[1] = step2_outputDir;
+        if (args.length > 2) {
+            job2Args[2] = args[2];
+        }
+        Job job2 = termFreqDriver.configJob(job2Args);
 
         ControlledJob controlledJob2 = new ControlledJob(conf);
         controlledJob2.setJob(job2);
@@ -129,25 +94,12 @@ public class Driver extends Configured implements Tool {
         jobControl.addJob(controlledJob2);
 
         /* step 3, calculate tf_idf */
-
-        Job job3 = Job.getInstance(conf, "tf idf step3 job");
-        job3.setJarByClass(Driver.class);
-
-        job3.addCacheFile(new URI(docCntDir + "/part-r-00000#docCnt"));
-
-        FileInputFormat.addInputPath(job3, step2_outputDir);
-        job3.setInputFormatClass(KeyValueTextInputFormat.class);
-
-        job3.setMapperClass(Mapper.class);
-        job3.setMapOutputKeyClass(Text.class);
-        job3.setMapOutputValueClass(Text.class);
-
-        job3.setReducerClass(TF_IDF_Reducer.class);
-        job3.setNumReduceTasks(conf.getInt("num.reduce.tasks", 5));
-        job3.setOutputKeyClass(Text.class);
-        job3.setOutputValueClass(Text.class);
-
-        FileOutputFormat.setOutputPath(job3, step3_outputDir);
+        TF_IDF_Driver tf_idf_driver = new TF_IDF_Driver();
+        String[] job3Args = new String[3];
+        job3Args[0] = docCntDir;
+        job3Args[1] = step2_outputDir;
+        job3Args[2] = step3_outputDir;
+        Job job3 = tf_idf_driver.configJob(job3Args);
 
         ControlledJob controlledJob3 = new ControlledJob(conf);
         controlledJob3.setJob(job3);

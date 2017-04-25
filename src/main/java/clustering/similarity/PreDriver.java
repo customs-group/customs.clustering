@@ -67,7 +67,7 @@ public class PreDriver extends Configured implements Tool {
         FileInputFormat.addInputPath(job, new Path(args[0]));
         job.setInputFormatClass(KeyValueTextInputFormat.class);
 
-        job.setMapperClass(PreMapper.class);
+        job.setMapperClass(PreMapper2.class);
         job.setMapOutputKeyClass(IntIntTupleWritable.class);
         job.setMapOutputValueClass(Text.class);
 

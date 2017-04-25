@@ -21,7 +21,6 @@ import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
-import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.KeyValueTextInputFormat;
 import org.apache.hadoop.mapreduce.lib.jobcontrol.ControlledJob;
@@ -90,8 +89,8 @@ public class Driver extends Configured implements Tool {
         FileInputFormat.addInputPath(job2, step1_outputDir);
         job2.setInputFormatClass(KeyValueTextInputFormat.class);
 
-        job2.setMapperClass(Mapper.class);
-        job2.setMapOutputKeyClass(Text.class);
+        job2.setMapperClass(Step2Mapper.class);
+        job2.setMapOutputKeyClass(IntWritable.class);
         job2.setMapOutputValueClass(Text.class);
 
         job2.setReducerClass(Step2Reducer.class);

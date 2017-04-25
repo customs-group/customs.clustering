@@ -13,9 +13,12 @@
  */
 package clustering.init;
 
+import clustering.Utils.FileUtils;
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.hadoop.mapreduce.lib.input.FileSplit;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -36,22 +39,41 @@ public class WordSepMapper extends Mapper<LongWritable, Text, Text, Text> {
 
     private Map<String, String> synonymsMap = new HashMap<>();
 
+    private String splitter;
+
     //~ Methods ----------------------------------------------------------------
 
     @Override
     protected void setup(Context context) throws IOException, InterruptedException {
         super.setup(context);
+
+        String fileName = ((FileSplit) context.getInputSplit()).getPath().getName();
+        String extention = FileUtils.getExtension(fileName);
+
+        switch (extention) {
+            case "tsv":
+                this.splitter = "\t";
+                break;
+            case "csv":
+                this.splitter = ",";
+                break;
+            default:
+                Configuration conf = context.getConfiguration();
+                this.splitter = conf.get("column.splitter");
+        }
+
         // TODO: 17-4-21 read from file
+        // dicts
+        this.synonymsMap.put("公斤", "千克");
+        this.synonymsMap.put("不是", "非");
         // 0901
         this.synonymsMap.put("(?:阿拉比加|阿拉毕卡)", "阿拉比卡");
-        this.synonymsMap.put("(?:罗布斯特|罗布斯塔|罗巴斯特|罗巴斯塔|罗伯斯特|罗伯斯塔)", "罗布斯塔");
+        this.synonymsMap.put("(?:罗布斯特|罗布斯塔|罗巴斯特|罗巴斯塔|罗伯斯特|罗伯斯塔|罗姆斯达)", "罗布斯塔");
         this.synonymsMap.put("(?:焙炒|培炒|烘炒|烘培)", "烘焙");
         this.synonymsMap.put("寝除", "浸除");
-
         // 8703
         this.synonymsMap.put("5座", "五座");
         this.synonymsMap.put("7座", "七座");
-        this.synonymsMap.put("不是", "非");
         this.synonymsMap.put("(?:4maitc|4mat1c|4mat2c)", "4matic");
         this.synonymsMap.put("(?:ican-am|can-am)", "canam");
         this.synonymsMap.put("cfm0to", "cfmoto");
@@ -82,14 +104,16 @@ public class WordSepMapper extends Mapper<LongWritable, Text, Text, Text> {
     protected void map(LongWritable key, Text value, Context context)
             throws IOException, InterruptedException {
 
-        String[] contents = replaceSynonyms(value.toString()).split("@@");
+        String[] contents = value.toString().split(this.splitter);
+        String name = replaceSynonyms(contents[3]);
 
-        String nameAndModel;
-        nameAndModel = SepUtils.append(contents[3]) + "##";
+        String nameAndModel = SepUtils.append(name) + "##";
 
         if (contents.length > 3) {
-            nameAndModel += SepUtils.append(contents[4]);
+            String model = replaceSynonyms(contents[4]);
+            nameAndModel += SepUtils.append(model);
         }
+
         this.outputKey.set(contents[0] + "@@" + contents[1]);
         this.outputValue.set(nameAndModel);
         context.write(this.outputKey, this.outputValue);
@@ -103,7 +127,7 @@ public class WordSepMapper extends Mapper<LongWritable, Text, Text, Text> {
     private String replaceSynonyms(String origin) {
         String result = origin;
         for (Map.Entry<String, String> entry : this.synonymsMap.entrySet()) {
-            result = origin.replaceAll(entry.getKey(), entry.getValue());
+            result = result.replaceAll(entry.getKey(), entry.getValue());
         }
         return result;
     }
