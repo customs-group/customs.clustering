@@ -38,7 +38,7 @@ public class PreDriver extends Configured implements Tool {
     public int run(String[] args) throws Exception {
         if (args.length < 2) {
             System.err.printf("usage: %s inverted_index_result_dir output_dir" +
-                            " [compress_or_not] [reducer number] [deci number]\n",
+                            " [compress_or_not] [reducer_number] [deci_number]\n",
                     this.getClass().getSimpleName());
             System.exit(1);
         }

@@ -11,12 +11,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import org.junit.Test;
+
 import clustering.simhash.SimHash;
+import org.junit.Test;
 
 import java.math.BigInteger;
 import java.text.DecimalFormat;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by edwardlol on 2017/4/20.

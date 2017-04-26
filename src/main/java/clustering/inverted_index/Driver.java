@@ -56,7 +56,7 @@ public class Driver extends Configured implements Tool {
         if (args.length > 2) {
             conf.setInt("deci.number", Integer.valueOf(args[2]));
         } else {
-            conf.setInt("deci.number", 3);
+            conf.setInt("deci.number", 4);
         }
 
         if (args.length > 3) {
