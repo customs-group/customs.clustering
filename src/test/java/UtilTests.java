@@ -90,6 +90,15 @@ public final class UtilTests {
         DecimalFormat format = new DecimalFormat("#0.00");
         System.out.println(format.format(0.15134));
     }
+
+
+    @Test
+    public void sbTest() {
+        String aaa = "aaa";
+        StringBuilder bbb = new StringBuilder(aaa);
+        bbb.append("bbb");
+        System.out.println(bbb.toString());
+    }
 }
 
 // End UtilTests.java

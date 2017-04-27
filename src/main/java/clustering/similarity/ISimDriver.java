@@ -77,7 +77,7 @@ public class ISimDriver extends Configured implements Tool {
         if (args.length > 3) {
             conf.setInt("reduce.num", Integer.valueOf(args[3]));
         } else {
-            conf.setInt("reduce.num", 1);
+            conf.setInt("reduce.num", 5);
         }
 
         job.setMapperClass(ISimMapper.class);
