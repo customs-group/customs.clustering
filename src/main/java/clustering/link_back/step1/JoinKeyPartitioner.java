@@ -13,21 +13,21 @@
  */
 package clustering.link_back.step1;
 
-import clustering.link_back.step1.io.KeyTagWritable;
+import clustering.link_back.io.Step1KeyWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Partitioner;
 
 /**
- * Partition the mapper output by the joinKey in {@link KeyTagWritable}.
+ * Partition the mapper output by the joinKey in {@link Step1KeyWritable}.
  *
  * @author edwardlol
  *         Created by edwardlol on 17-4-27.
  */
-public class JoinKeyPartitioner extends Partitioner<KeyTagWritable, Text> {
+public class JoinKeyPartitioner extends Partitioner<Step1KeyWritable, Text> {
     //~ Methods ----------------------------------------------------------------
 
     @Override
-    public int getPartition(KeyTagWritable step1KeyWritable, Text text, int numPartitions) {
+    public int getPartition(Step1KeyWritable step1KeyWritable, Text text, int numPartitions) {
         return step1KeyWritable.getJoinKey().hashCode() % numPartitions;
     }
 }

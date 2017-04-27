@@ -11,9 +11,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package clustering.link_back.step1;
+package clustering.link_back.step2;
 
 import clustering.link_back.io.Step1KeyWritable;
+import clustering.link_back.io.Step2KeyWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.lib.input.FileSplit;
@@ -26,10 +27,10 @@ import java.io.IOException;
  * @author edwardlol
  *         Created by edwardlol on 17-4-27.
  */
-public class SetKeyMapper extends Mapper<Text, Text, Step1KeyWritable, Text> {
+public class SetKeyMapper extends Mapper<Text, Text, Step2KeyWritable, Text> {
     //~ Instance fields --------------------------------------------------------
 
-    private Step1KeyWritable taggedKey = new Step1KeyWritable();
+    private Step2KeyWritable taggedKey = new Step2KeyWritable();
 
     private int joinOrder;
 
@@ -43,17 +44,15 @@ public class SetKeyMapper extends Mapper<Text, Text, Step1KeyWritable, Text> {
 
     /**
      * @param key   group_id
-     * @param value cluster_id in mst result,
-     *             or entry_id@@g_no::g_name##g_model in simhash intermediate result.
+     * @param value cluster_id or content
      *              {@inheritDoc}
      */
     @Override
     public void map(Text key, Text value, Context context)
             throws IOException, InterruptedException {
-        int joinKey = Integer.valueOf(key.toString());
-        this.taggedKey.set(joinKey, this.joinOrder);
 
-        // (group_id,join_order) \t cluster_id or entry_id@@g_no::g_name##g_model
+        this.taggedKey.set(key.toString(), this.joinOrder);
+        // (group_id,join_order) \t cluster_id or content
         context.write(this.taggedKey, value);
     }
 }

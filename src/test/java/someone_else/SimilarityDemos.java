@@ -28,7 +28,7 @@ public class SimilarityDemos {
 
     // I did not merge the two step into one work flow.
     // because each step takes a lot of time.
-    // Get prepared before starting this step.
+    // Get prepared before starting these steps.
     @Test
     public void preDemo() {
         PreDriver driver = new PreDriver();

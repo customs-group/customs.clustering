@@ -13,7 +13,7 @@
  */
 package clustering.link_back.step1;
 
-import clustering.link_back.step1.io.KeyTagWritable;
+import clustering.link_back.io.Step1KeyWritable;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
@@ -26,7 +26,7 @@ import java.io.IOException;
  * @author edwardlol
  *         Created by edwardlol on 17-4-27.
  */
-public class JoinReducer extends Reducer<KeyTagWritable, Text, IntWritable, Text> {
+public class JoinReducer extends Reducer<Step1KeyWritable, Text, IntWritable, Text> {
     //~ Instance fields --------------------------------------------------------
 
     private IntWritable outputKey = new IntWritable();
@@ -35,11 +35,12 @@ public class JoinReducer extends Reducer<KeyTagWritable, Text, IntWritable, Text
 
     /**
      * @param key    group_id, join_order
-     * @param values cluster_id or contents
+     * @param values cluster_id in mst result,
+     *               or entry_id@@g_no::g_name##g_model in simhash intermediate result.
      *               {@inheritDoc}
      */
     @Override
-    public void reduce(KeyTagWritable key, Iterable<Text> values, Context context)
+    public void reduce(Step1KeyWritable key, Iterable<Text> values, Context context)
             throws IOException, InterruptedException {
 
         for (Text value : values) {

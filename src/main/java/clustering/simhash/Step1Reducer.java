@@ -82,7 +82,7 @@ public class Step1Reducer extends Reducer<LongWritable, Text, IntWritable, Text>
                 this._pool.update(thisHash, id);
             }
             this.outputKey.set(id);
-//             group_id \t entry_id@@g_no::g_name##g_model
+            // group_id \t entry_id@@g_no::g_name##g_model
             context.write(this.outputKey, value);
         }
     }

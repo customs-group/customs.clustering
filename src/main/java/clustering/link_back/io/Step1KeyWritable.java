@@ -11,14 +11,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package clustering.link_back.step1.io;
+package clustering.link_back.io;
 
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.WritableComparable;
-
-import java.io.DataInput;
-import java.io.DataOutput;
-import java.io.IOException;
 
 /**
  * The key writable used in step 1.
@@ -26,33 +22,20 @@ import java.io.IOException;
  * @author edwardlol
  *         Created by edwardlol on 17-4-27.
  */
-public class KeyTagWritable implements WritableComparable<KeyTagWritable> {
-    //~ Instance fields --------------------------------------------------------
+public class Step1KeyWritable extends AbstractKeyTag<IntWritable, IntWritable> implements WritableComparable<Step1KeyWritable> {
+    //~ Constructors -----------------------------------------------------------
 
     /**
-     * Join key, group id in mst.
+     * Join key means the group id in mst,
+     * and tag is the secondary sort field,
+     * 1 = group_id, 2 = content.
      */
-    private IntWritable joinKey = new IntWritable();
-
-    /**
-     * Secondary sort field.
-     * 1 = group_id, 2 = content
-     */
-    private IntWritable tag = new IntWritable();
+    public Step1KeyWritable() {
+        this.joinKey = new IntWritable();
+        this.tag = new IntWritable();
+    }
 
     //~ Methods ----------------------------------------------------------------
-
-    @Override
-    public void readFields(DataInput in) throws IOException {
-        this.joinKey.readFields(in);
-        this.tag.readFields(in);
-    }
-
-    @Override
-    public void write(DataOutput out) throws IOException {
-        this.joinKey.write(out);
-        this.tag.write(out);
-    }
 
     /**
      * Main method, first sort by the joinKey, then keys with
@@ -60,20 +43,12 @@ public class KeyTagWritable implements WritableComparable<KeyTagWritable> {
      * on the value of the tag field, ensuring the order we want.
      */
     @Override
-    public int compareTo(KeyTagWritable step1KeyWritable) {
+    public int compareTo(Step1KeyWritable step1KeyWritable) {
         int compareValue = this.joinKey.compareTo(step1KeyWritable.getJoinKey());
         if (compareValue == 0) {
             compareValue = this.tag.compareTo(step1KeyWritable.getTag());
         }
         return compareValue;
-    }
-
-    public IntWritable getJoinKey() {
-        return this.joinKey;
-    }
-
-    public IntWritable getTag() {
-        return this.tag;
     }
 
     public void set(int key, int tag) {
@@ -82,4 +57,4 @@ public class KeyTagWritable implements WritableComparable<KeyTagWritable> {
     }
 }
 
-// End KeyTagWritable.java
+// End Step1KeyWritable.java
