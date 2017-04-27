@@ -20,7 +20,12 @@ import org.apache.hadoop.mapreduce.Reducer;
 import java.io.IOException;
 
 /**
- * Created by edwardlol on 17-4-24.
+ * Reducer class for the last step of calculating
+ * distance matrix.
+ * Add up the column similarities for each vector pair.
+ *
+ * @author edwardlol
+ *         Created by edwardlol on 17-4-24.
  */
 public class ISimReducer extends Reducer<IntIntTupleWritable, DoubleWritable, IntIntTupleWritable, DoubleWritable> {
     //~ Instance fields --------------------------------------------------------
@@ -30,9 +35,9 @@ public class ISimReducer extends Reducer<IntIntTupleWritable, DoubleWritable, In
     //~ Methods ----------------------------------------------------------------
 
     /**
-     * @param key     docId1,docId2
-     * @param values  sim
-     *                {@inheritDoc}
+     * @param key    groupId1,groupId2
+     * @param values sim
+     *               {@inheritDoc}
      */
     @Override
     public void reduce(IntIntTupleWritable key, Iterable<DoubleWritable> values,

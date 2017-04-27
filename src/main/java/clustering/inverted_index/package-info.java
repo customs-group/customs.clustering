@@ -13,11 +13,11 @@
  */
 
 /**
- * Initialization job.
- * Read the input file, extract the commodity info
- * and then split the terms.
+ * Generate the inverted index for this corpus.
+ * The inverted index includes tf-idf information, and is
+ * used to calculate the distance matrix.
  *
  * @author edwardlol
- * Created by edwardlol on 17-4-25.
+ * Created by edwardlol on 2017/4/27.
  */
-package clustering.init;
+package clustering.inverted_index;

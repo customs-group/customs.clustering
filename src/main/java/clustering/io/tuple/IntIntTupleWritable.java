@@ -16,9 +16,12 @@ package clustering.io.tuple;
 import org.apache.hadoop.io.IntWritable;
 
 /**
- * Created by edwardlol on 17-4-24.
+ * Writable class for a tuple of two integers.
+ *
+ * @author edwardlol
+ *         Created by edwardlol on 17-4-24.
  */
-public class IntIntTupleWritable extends TupleWritable<IntWritable, IntWritable>  {
+public class IntIntTupleWritable extends TupleWritable<IntWritable, IntWritable> {
     //~ Constructors -----------------------------------------------------------
 
     public IntIntTupleWritable() {
@@ -40,6 +43,14 @@ public class IntIntTupleWritable extends TupleWritable<IntWritable, IntWritable>
     //~ Methods ----------------------------------------------------------------
 
     @Override
+    public int hashCode() {
+        int hash = 17;
+        hash = hash * 31 + this.left.get();
+        hash = hash * 31 + this.right.get();
+        return hash;
+    }
+
+    @Override
     public boolean equals(Object that) {
         if (!(that instanceof IntIntTupleWritable)) {
             return false;
@@ -57,14 +68,6 @@ public class IntIntTupleWritable extends TupleWritable<IntWritable, IntWritable>
             return this.right.compareTo(guest.right);
         }
         return result;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 17;
-        hash = hash * 31 + this.left.get();
-        hash = hash * 31 + this.right.get();
-        return hash;
     }
 
     public void set(IntWritable left, IntWritable right) {

@@ -22,7 +22,10 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 
 /**
- * Created by edwardlol on 17-4-24.
+ * Reducer class to calculate column similarities.
+ *
+ * @author edwardlol
+ *         Created by edwardlol on 17-4-24.
  */
 public class PreReducer extends Reducer<IntIntTupleWritable, Text, Text, Text> {
     //~ Instance fields --------------------------------------------------------

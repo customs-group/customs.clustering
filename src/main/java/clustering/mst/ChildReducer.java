@@ -23,7 +23,10 @@ import java.io.FileReader;
 import java.io.IOException;
 
 /**
- * Created by edwardlol on 17-4-26.
+ * Reducer to calculate the local mst.
+ *
+ * @author edwardlol
+ *         Created by edwardlol on 17-4-26.
  */
 public class ChildReducer extends Reducer<DoubleWritable, Text, DoubleWritable, Text> {
 //~ Instance fields --------------------------------------------------------

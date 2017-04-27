@@ -32,7 +32,11 @@ import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
 /**
- * Created by edwardlol on 17-4-24.
+ * Driver class for the last step of calculating
+ * distance matrix.
+ *
+ * @author edwardlol
+ *         Created by edwardlol on 17-4-24.
  */
 public class ISimDriver extends Configured implements Tool {
     //~  Methods ---------------------------------------------------------------

@@ -13,11 +13,9 @@
  */
 
 /**
- * Initialization job.
- * Read the input file, extract the commodity info
- * and then split the terms.
+ * Util classes.
  *
  * @author edwardlol
- * Created by edwardlol on 17-4-25.
+ * Created by edwardlol on 2017/4/27.
  */
-package clustering.init;
+package clustering.Utils;

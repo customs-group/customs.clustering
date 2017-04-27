@@ -21,7 +21,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by edwardlol on 17-4-24.
+ * Normalize the tf-idf result so that
+ * each vector has a norm of 1.
+ *
+ * @author edwardlol
+ *         Created by edwardlol on 17-4-24.
  */
 public class NormalizerReducer extends Reducer<Text, Text, Text, Text> {
     //~ Instance fields --------------------------------------------------------

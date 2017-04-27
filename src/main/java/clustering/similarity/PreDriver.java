@@ -29,7 +29,11 @@ import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
 /**
- * Created by edwardlol on 17-4-24.
+ * Driver class to divide and distribute the inverted index.
+ * In such way that the distance matrix can be calculated pararrel.
+ *
+ * @author edwardlol
+ *         Created by edwardlol on 17-4-24.
  */
 public class PreDriver extends Configured implements Tool {
     //~  Methods ---------------------------------------------------------------
@@ -67,7 +71,7 @@ public class PreDriver extends Configured implements Tool {
         FileInputFormat.addInputPath(job, new Path(args[0]));
         job.setInputFormatClass(KeyValueTextInputFormat.class);
 
-        job.setMapperClass(PreMapper2.class);
+        job.setMapperClass(PreMapper.class);
         job.setMapOutputKeyClass(IntIntTupleWritable.class);
         job.setMapOutputValueClass(Text.class);
 

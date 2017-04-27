@@ -18,7 +18,10 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Partitioner;
 
 /**
- * Created by edwardlol on 17-4-24.
+ * Partition the index segments evenly across the cluster.
+ *
+ * @author edwardlol
+ *         Created by edwardlol on 17-4-24.
  */
 public class PrePartitioner extends Partitioner<IntIntTupleWritable, Text> {
     //~ Methods ----------------------------------------------------------------

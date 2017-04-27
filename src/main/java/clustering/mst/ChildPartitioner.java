@@ -18,7 +18,12 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Partitioner;
 
 /**
- * Created by edwardlol on 17-4-26.
+ * Partition the edges.
+ * Partition by their end points so that the sub-graphs are
+ * both connected and evenly distributed.
+ *
+ * @author edwardlol
+ *         Created by edwardlol on 17-4-26.
  */
 public class ChildPartitioner extends Partitioner<DoubleWritable, Text> {
     //~ Methods ----------------------------------------------------------------

@@ -20,7 +20,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Util methods for seperate sentences.
+ * Util methods for seperating sentences.
  *
  * @author edwardlol
  *         Created by edwardlol on 2017/4/20.

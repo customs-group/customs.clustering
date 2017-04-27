@@ -99,7 +99,6 @@ public class PreMapper extends Mapper<Text, Text, IntIntTupleWritable, Text> {
                     StringBuilder sb2 = new StringBuilder(sb);
                     sb2.append('#');
                     sb2 = append(docs, j, docsInSeg, sb2);
-//                        StringBuilder sb2 = append(docs, j, docsInSeg, sb.append('#'));
                     this.outputKey.set(this.bigIndex++, 1);
                     this.outputValue.set(sb2.toString());
                     context.write(this.outputKey, this.outputValue);

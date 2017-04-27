@@ -14,7 +14,10 @@
 package clustering.Utils;
 
 /**
- * Created by edwardlol on 17-4-25.
+ * Some util methods for file reading.
+ *
+ * @author edwardlol
+ *         Created by edwardlol on 17-4-25.
  */
 public final class FileUtils {
     //~ Constructors -----------------------------------------------------------
@@ -31,7 +34,7 @@ public final class FileUtils {
         int p = Math.max(fileName.lastIndexOf('/'), fileName.lastIndexOf('\\'));
 
         if (i > p) {
-            extension = fileName.substring(i+1);
+            extension = fileName.substring(i + 1);
         }
         return extension;
     }

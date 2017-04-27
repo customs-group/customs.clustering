@@ -11,20 +11,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package clustering.io.deprecated;
 
 /**
- * Created by edwardlol on 17-4-24.
+ * Customized writables.
+ *
+ * @author edwardlol
+ * Created by edwardlol on 2017/4/27.
  */
-public class CollectionWritable {
-    //~ Static fields/initializers ---------------------------------------------
-
-    //~ Instance fields --------------------------------------------------------
-
-    //~ Constructors -----------------------------------------------------------
-
-    //~ Methods ----------------------------------------------------------------
-
-}
-
-// End CollectionWritable.java
+package clustering.io;

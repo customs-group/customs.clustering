@@ -17,7 +17,10 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.mapreduce.lib.jobcontrol.JobControl;
 
 /**
- * Created by edwardlol on 17-4-21.
+ * Some util methods for map-reduce jobs.
+ *
+ * @author edwardlol
+ *         Created by edwardlol on 17-4-21.
  */
 public final class MapReduceUtils {
     //~ Constructors -----------------------------------------------------------

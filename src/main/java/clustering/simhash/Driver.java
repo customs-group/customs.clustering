@@ -30,7 +30,7 @@ import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
 /**
- * Driver class for preclustering data.
+ * Driver class for pre-clustering data.
  * Step 1 calculate a SimHash signature for every item,
  * and group items with similar signatures together.
  * Step 2 take the first item from each group as a representative.

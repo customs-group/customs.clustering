@@ -21,7 +21,10 @@ import java.io.DataOutput;
 import java.io.IOException;
 
 /**
- * Created by edwardlol on 17-4-24.
+ * Writable interface for a tuple of two values.
+ *
+ * @author edwardlol
+ *         Created by edwardlol on 17-4-24.
  */
 abstract class TupleWritable<K extends Writable, V extends Writable> implements WritableComparable<TupleWritable> {
     //~ Instance fields --------------------------------------------------------
@@ -68,9 +71,12 @@ abstract class TupleWritable<K extends Writable, V extends Writable> implements 
         return this.right;
     }
 
+    /**
+     * Omitting braces for perfomance reason.
+     */
     @Override
     public String toString() {
-        return "(" + this.left.toString() + ',' + this.right.toString() + ')';
+        return this.left.toString() + ',' + this.right.toString();
     }
 
 }

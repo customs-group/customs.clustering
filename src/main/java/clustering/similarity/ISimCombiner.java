@@ -20,7 +20,13 @@ import org.apache.hadoop.mapreduce.Reducer;
 import java.io.IOException;
 
 /**
- * Created by edwardlol on 17-4-24.
+ * Add up the similarity locally.
+ * The difference between this class and the reducer class is that
+ * this class outputs the "similarity", and the reducer class outputs
+ * the "distance", which equals 1 - similarity.
+ *
+ * @author edwardlol
+ *         Created by edwardlol on 17-4-24.
  */
 public class ISimCombiner extends Reducer<IntIntTupleWritable, DoubleWritable, IntIntTupleWritable, DoubleWritable> {
     //~ Instance fields --------------------------------------------------------

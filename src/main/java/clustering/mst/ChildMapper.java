@@ -23,7 +23,10 @@ import java.io.FileReader;
 import java.io.IOException;
 
 /**
- * Created by edwardlol on 17-4-26.
+ * Mapper to calculate a local mst.
+ *
+ * @author edwardlol
+ *         Created by edwardlol on 17-4-26.
  */
 public class ChildMapper extends Mapper<Text, Text, DoubleWritable, Text> {
     //~ Instance fields --------------------------------------------------------

@@ -21,7 +21,12 @@ import org.apache.hadoop.mapreduce.Mapper;
 import java.io.IOException;
 
 /**
- * Created by edwardlol on 17-4-24.
+ * Mapper class for the last step of calculating
+ * distance matrix.
+ * Read and wrap the data for reducer.
+ *
+ * @author edwardlol
+ *         Created by edwardlol on 17-4-24.
  */
 public class ISimMapper extends Mapper<Text, Text, IntIntTupleWritable, DoubleWritable> {
     //~ Instance fields --------------------------------------------------------
@@ -33,7 +38,7 @@ public class ISimMapper extends Mapper<Text, Text, IntIntTupleWritable, DoubleWr
     //~ Methods ----------------------------------------------------------------
 
     /**
-     * @param key   src,dest
+     * @param key   groupId1,groupId2
      * @param value sim
      *              {@inheritDoc}
      */
