@@ -19,6 +19,7 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 /**
  * Devide and distribute the indexes.
@@ -78,9 +79,7 @@ public class PreMapper extends Mapper<Text, Text, IntIntTupleWritable, Text> {
 
         String[] docs = value.toString().split(",");
 
-
         if (docs.length > this.lengthThreshold) {
-
             /* set the length of each container */
             int docsInSeg = docs.length / this.splitNum;
             if (docs.length % this.splitNum != 0) {
@@ -88,56 +87,51 @@ public class PreMapper extends Mapper<Text, Text, IntIntTupleWritable, Text> {
             }
             for (int i = 0; i < this.splitNum - 1; i++) {
                 // seg_i, self join
-                StringBuilder sb = append(docs, i, docsInSeg);
+                String partI = getSegment(docs, i, docsInSeg);
                 this.outputKey.set(this.bigIndex++, 0);
-                this.outputValue.set(sb.toString());
+                this.outputValue.set(partI);
                 context.write(this.outputKey, this.outputValue);
 
                 for (int j = i + 1; j < this.splitNum; j++) {
                     // seg_i#seg_j, cross join
-                        /* continue from sb1 */
-                    StringBuilder sb2 = new StringBuilder(sb);
-                    sb2.append('#');
-                    sb2 = append(docs, j, docsInSeg, sb2);
+                    /* continue from seg_i */
+                    String partJ = getSegment(docs, j, docsInSeg);
+
                     this.outputKey.set(this.bigIndex++, 1);
-                    this.outputValue.set(sb2.toString());
+                    this.outputValue.set(partI + "#" + partJ);
                     context.write(this.outputKey, this.outputValue);
                 }
             }
-
             // last seg, self join
-            int lastStart = this.splitNum - 1;
-
-            StringBuilder sb = append(docs, lastStart, docsInSeg);
-
+            String lastSeg = getSegment(docs, this.splitNum - 1, docsInSeg);
             this.outputKey.set(this.bigIndex++, 0);
-            this.outputValue.set(sb.toString());
+            this.outputValue.set(lastSeg);
             context.write(this.outputKey, this.outputValue);
-
         } else if (docs.length > 1) {
             this.outputKey.set(this.smallIndex++, 0);
             // container_id,flag \t term_id:group_id=tf-idf,...
             context.write(this.outputKey, value);
         }
-
     }
 
+    private String getSegment(String[] completeIndex, int segIndex, int docsInSeg) {
+        int endIndex = Math.min((segIndex + 1) * docsInSeg, completeIndex.length);
+        String[] segment = Arrays.copyOfRange(completeIndex, segIndex * docsInSeg, endIndex);
+        return arrToStr(segment);
+    }
 
-    private StringBuilder append(String[] docs, int startIndex, int docsInSeg, StringBuilder sb) {
-        int stopIndex = Math.min(docs.length, (startIndex + 1) * docsInSeg);
-        for (int a = 0; a < stopIndex; a++) {
-            int index = startIndex * docsInSeg + a;
-            sb.append(docs[index]).append(',');
+    private String arrToStr(String[] segment) {
+        return arrToStr(segment, ',');
+    }
+
+    private String arrToStr(String[] segment, char splitter) {
+        StringBuilder sb = new StringBuilder();
+        for (String doc : segment) {
+            sb.append(doc).append(splitter);
         }
         sb.deleteCharAt(sb.length() - 1);
-        return sb;
+        return sb.toString();
     }
-
-    private StringBuilder append(String[] docs, int startIndex, int docsInSeg) {
-        StringBuilder sb = new StringBuilder();
-        return append(docs, startIndex, docsInSeg, sb);
-    }
-
 }
 
 // End PreMapper.java

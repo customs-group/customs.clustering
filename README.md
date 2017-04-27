@@ -22,11 +22,11 @@
 
 3. 计算单词权重：
 
-   将商品数据的每一个单词通过 [TF - IDF 算法](https://zh.wikipedia.org/wiki/Tf-idf) 计算出它们相应的权值，使得商品数据从文本数据的形式转化成向量形式。具体用例可见 someone_else.TF_IDF_Demos 类。
+   将商品数据的每一个单词通过 TF - IDF 算法计算出它们相应的权值，使得商品数据从文本数据的形式转化成向量形式。具体用例可见 someone_else.TF_IDF_Demos 类。
 
 4. 计算带权值的倒排索引
 
-   通过[倒排索引](https://zh.wikipedia.org/zh-hans/%E5%80%92%E6%8E%92%E7%B4%A2%E5%BC%95)的方式表示整个数据空间，同时将单词的权值信息包含在倒排索引中。具体用例可见 someone_else.InvertedIndexDemos 类。
+   通过倒排索引的方式表示整个数据空间，同时将单词的权值信息包含在倒排索引中。具体用例可见 someone_else.InvertedIndexDemos 类。
 
 5. 通过倒排索引计算相似度矩阵
 
@@ -38,16 +38,13 @@
 
 7. 将聚类结果与原始商品数据进行关联
 
-   聚类算法将商品按照生成的id划分成不同的类别。要在后续工作中使用该分类信息，还需将聚类的结果与原始商品数据相关联。具体用例可见
-
 
 
 ## 使用方法
 
 环境配置：
 
-* 使用本项目提供的 Hadoop，版本为 3.0.0-alpha2。
-* 若使用其他 Hadoop，需要确定配置好 native library，同时确定 native library 中编译了 g-lib 。此外，不同版本的 Hadoop 配置文件不同，可以参考本项目的配置文件，位置在\{HADOOP_HOME}/etc/hadoop 中，需配置 hadoop-env.sh, core-site.xml, hdfs-site.xml, mapred-site.xml, yarn-site.xml 五个文件，以及按照集群环境配置 slaves 文件。
+配置文件：
 
 1. 初始化：
 
@@ -106,7 +103,7 @@
 
 4. 构建倒排索引：
 
-   读入单词权重的计算结果， 根据倒排索引的原理，将权重的结果插入到倒排索引中，生成带权重信息的倒排索引。对应 Driver 类用法：
+   读入单词权重的计算结果， 根据[倒排索引的原理](https://zh.wikipedia.org/zh-hans/%E5%80%92%E6%8E%92%E7%B4%A2%E5%BC%95)，将权重的结果插入到倒排索引中，生成带权重信息的倒排索引。对应 Driver 类用法：
 
    ```bash
    hadoop jar clustering.inverted_index.Driver ${input_file} ${output_file} [decimal_number] [pruning_threshold]
@@ -131,13 +128,13 @@
 
    - \${input_file} 输入文件（生成倒排索引步骤的输出）在 HDFS 中路径
    - \${output_file} 输出文件在 HDFS 中路径
-   - compression_flag 1 为使用压缩格式进行输出，0 不使用。由于计算结果占用大量存储空间，使用压缩格式能显著缩短 IO 时间。默认为 1
+   - compression_flag 1 为使用压缩格式进行输出，0 不使用。由于计算结果占用大量存储空间，使用压缩格式能显著缩短 IO 时间。默认为 1。默认使用的压缩格式为Gzip，需要
    - reducer_number reducer 作业的数目。参考集群所能开启的 mapper / reducer 容器数。在为 Resource Manager / App Manager 预留足够容器后，建议剩余容器全部用于开启 reducer 作业，以增加计算的并行度。默认值为29
    - deci_number 输出时保留的小数位数。参考生成倒排索引时的设置
 
 6. 分布式层次聚类运算
 
-   ​读入计算出的相似度矩阵，
+   读入
 
 7. ​
 
