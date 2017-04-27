@@ -53,7 +53,7 @@ public class InvertedIndexReducer extends Reducer<Text, Text, Text, Text> {
     @Override
     protected void setup(Context context) throws IOException, InterruptedException {
         Configuration conf = context.getConfiguration();
-        int deci_num = conf.getInt("deci.number", 3);
+        int deci_num = conf.getInt("deci.number", 4);
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("0.");
         for (int i = 0; i < deci_num; i++) {
@@ -61,7 +61,7 @@ public class InvertedIndexReducer extends Reducer<Text, Text, Text, Text> {
         }
         this.decimalFormat = new DecimalFormat(stringBuilder.toString());
         this.pruning = conf.getBoolean("pruning", false);
-        this.pruningThreshold = conf.getDouble("pruning.threshold", 0.1d);
+        this.pruningThreshold = conf.getDouble("pruning.threshold", 0.001d);
     }
 
     /**

@@ -13,6 +13,7 @@
  */
 package clustering.init;
 
+import clustering.Utils.MapReduceUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
@@ -34,24 +35,22 @@ public class Driver extends Configured implements Tool {
     @Override
     public int run(String[] args) throws Exception {
         if (args.length < 2) {
-            System.err.printf("usage: %s input_dir output_dir [dict_path]\n", this.getClass().getSimpleName());
+            System.err.printf("usage: %s input_dir output_dir [column_splitter] [dict_path]\n",
+                    this.getClass().getSimpleName());
             System.exit(1);
         }
-
         Configuration conf = getConf();
-        if (conf == null) {
-            conf = new Configuration();
-            conf.set("fs.defaultFS", "hdfs://localhost:9000/user/edwardlol");
-        } else {
-            conf.set("fs.hdfs.impl",
-                    org.apache.hadoop.hdfs.DistributedFileSystem.class.getName());
-            conf.set("fs.file.impl",
-                    org.apache.hadoop.fs.LocalFileSystem.class.getName()
-            );
-        }
+
+        conf = MapReduceUtils.initConf(conf);
 
         if (args.length > 2) {
-            conf.set("dict.path", args[2]);
+            conf.set("column.splitter", args[2]);
+        } else {
+            conf.set("column.splitter", ",");
+        }
+
+        if (args.length > 3) {
+            conf.set("dict.path", args[3]);
         } else {
             conf.set("dict.path", "./dicts");
         }

@@ -43,27 +43,28 @@ public class DocCntDriver extends Configured implements Tool {
 
     public Job configJob(String[] args) throws Exception {
         if (args.length < 2) {
-            System.err.printf("usage: %s simhash_result_dir output_dir\n", getClass().getSimpleName());
+            System.err.printf("usage: %s simhash_result_dir pre_step_output_dir\n",
+                    getClass().getSimpleName());
             System.exit(1);
         }
 
         Configuration conf = getConf();
         conf = initConf(conf);
 
-        Job preJob = Job.getInstance(conf, "tf idf pre step");
-        preJob.setJarByClass(Driver.class);
+        Job job = Job.getInstance(conf, "tf idf pre job");
+        job.setJarByClass(Driver.class);
 
-        FileInputFormat.addInputPath(preJob, new Path(args[0]));
-        FileOutputFormat.setOutputPath(preJob, new Path(args[1]));
+        FileInputFormat.addInputPath(job, new Path(args[0]));
+        FileOutputFormat.setOutputPath(job, new Path(args[1]));
 
-        preJob.setMapperClass(DocCntMapper.class);
-        preJob.setCombinerClass(DocCntReducer.class);
+        job.setMapperClass(DocCntMapper.class);
+        job.setCombinerClass(DocCntReducer.class);
 
-        preJob.setReducerClass(DocCntReducer.class);
-        preJob.setOutputKeyClass(NullWritable.class);
-        preJob.setOutputValueClass(IntWritable.class);
+        job.setReducerClass(DocCntReducer.class);
+        job.setOutputKeyClass(NullWritable.class);
+        job.setOutputValueClass(IntWritable.class);
 
-        return preJob;
+        return job;
     }
 
     //~  Entrance --------------------------------------------------------------

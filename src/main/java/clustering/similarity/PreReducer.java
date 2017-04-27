@@ -123,6 +123,7 @@ public class PreReducer extends Reducer<IntIntTupleWritable, Text, Text, Text> {
     private void output(String id1, String id2,
                         String tf_idf1, String tf_idf2, Context context)
             throws IOException, InterruptedException {
+
         double result = Double.valueOf(tf_idf1) * Double.valueOf(tf_idf2);
 
         String out = this.decimalFormat.format(result);

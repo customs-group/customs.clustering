@@ -50,7 +50,8 @@ public final class SepUtils {
         try {
             sb.deleteCharAt(sb.length() - 1);
         } catch (RuntimeException e) {
-            System.out.println(sb.toString());
+            // usually because there's nothing in g_model
+            // do nothing here
         }
         return sb;
     }
