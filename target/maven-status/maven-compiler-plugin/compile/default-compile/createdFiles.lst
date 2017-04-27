@@ -6,6 +6,7 @@ clustering/simhash/Driver.class
 clustering/simhash/SimHash$1.class
 clustering/inverted_index/NormalizerReducer.class
 clustering/tf_idf/DocCntDriver.class
+clustering/mst/FinalReducer.class
 clustering/simhash/SigPool.class
 clustering/tf_idf/TF_IDF_Reducer.class
 clustering/simhash/SimHash$Builder.class
@@ -22,7 +23,7 @@ clustering/simhash/Step2Mapper.class
 clustering/tf_idf/DocCntMapper.class
 clustering/Utils/UnionFind.class
 clustering/init/Driver.class
-clustering/similarity/PreMapper2.class
+clustering/mst/FinalMapper.class
 clustering/tf_idf/DocCntReducer.class
 clustering/simhash/Step1Mapper.class
 clustering/similarity/PrePartitioner.class
