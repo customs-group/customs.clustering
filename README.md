@@ -44,12 +44,14 @@
 
 ## 使用方法
 
-环境配置：
+### 环境配置：
 
 - 使用本项目提供的 Hadoop，版本为 3.0.0-alpha2。
 - 若使用其他 Hadoop，需要确定配置好 hadoop native library，同时确定 native library 中编译了 g-lib 。此外，不同版本的 Hadoop 配置文件不同，可以参考本项目的配置文件，位置在{HADOOP_HOME}/etc/hadoop 中，需配置 hadoop-env.sh, core-site.xml, hdfs-site.xml, mapred-site.xml, yarn-site.xml 五个文件，以及按照集群环境配置 slaves 文件。
 
-1. 初始化：
+---
+
+1. ### 初始化：
 
    读入的文件格式可以是 csv 或 tsv，或任何其它纯文本格式。当文件格式不是 csv 或 tsv 时，需要初始化 job 时设置分隔符。文件内容形式为：
 
@@ -68,12 +70,14 @@
    * \${input_file} 输入文件在 HDFS 中路径，不包括文件名（后同）
    * \${output_file} 输出文件在 HDFS 中路径
 
-2. 预聚类（去重）：
+   ---
+
+2. ### 预聚类（去重）：
 
    读入经过初始化处理的数据，如果有特殊需要，设置 SimHash 的相似度阈值（不设置默认为 3）。对应 Driver 类用法：
 
    ```bash
-   hadoop jar clustering.simhash.Driver ${input_file} ${output_file} [SimHash_threshold]
+   hadoop jar jar_name.jar clustering.simhash.Driver ${input_file} ${output_file} [SimHash_threshold]
    ```
 
    **参数说明：**
@@ -86,12 +90,14 @@
 
    实际输出文件保存在 \${output_file}/result 中，中间结果保存在 \${output_file}/step1 中，最后的关联步骤会用到。
 
-3. 计算单词权重：
+   ---
+
+3. ### 计算单词权重：
 
    读入去重后的数据，分别计算每条商品记录中每个单词的权重。对应 Driver 类用法：
 
    ```bash
-   hadoop jar clustering.tf_idf.Driver ${input_file} ${output_file} [g_name_weight]
+   hadoop jar jar_name.jar clustering.tf_idf.Driver ${input_file} ${output_file} [g_name_weight]
    ```
 
    **参数说明：**
@@ -104,12 +110,14 @@
 
    实际输出文件保存在 \${output_file}/result 中
 
-4. 构建倒排索引：
+   ---
+
+4. ### 构建倒排索引：
 
    读入单词权重的计算结果， 根据[倒排索引的原理](https://zh.wikipedia.org/zh-hans/%E5%80%92%E6%8E%92%E7%B4%A2%E5%BC%95)，将权重的结果插入到倒排索引中，生成带权重信息的倒排索引。对应 Driver 类用法：
 
    ```bash
-   hadoop jar clustering.inverted_index.Driver ${input_file} ${output_file} [decimal_number] [pruning_threshold]
+   hadoop jar jar_name.jar clustering.inverted_index.Driver ${input_file} ${output_file} [decimal_number] [pruning_threshold]
    ```
 
    **参数说明：**
@@ -119,12 +127,18 @@
    * decimal_number 输出时保留的小数位数。关系到距离计算步骤的效率和精度，默认为4位
    * pruning_threshold 剪枝阈值。double 类型，默认为不剪枝。当传入该参数时，小于该参数的单词权值会被忽略。不建议使用。
 
+   *注意事项*
+
+   实际输出文件保存在 \${output_file}/result 中
+
+   ---
+
 5. 计算相似度矩阵：
 
    读入倒排索引，通过倒排索引中包含的权重信息，分布式计算向量（商品）空间的距离矩阵。由于计算量较大，耗时长，该步骤被划分为两步完成。第一步 Driver 类用法：
 
    ```bash
-   hadoop jar clustering.similarity.PreDriver ${input_file} ${output_file} [compression_flag] [reducer_number] [deci_number]
+   hadoop jar jar_name.jar clustering.similarity.PreDriver ${input_file} ${output_file} [compression_flag] [reducer_number] [deci_number]
    ```
 
    **参数说明：**
@@ -138,7 +152,7 @@
    第二步 Driver 类用法：
 
    ```bash
-   hadoop jar clustering.similarity.ISimDriver ${input_file} ${output_file} [compression_flag] [reducer_number]
+   hadoop jar jar_name.jar clustering.similarity.ISimDriver ${input_file} ${output_file} [compression_flag] [reducer_number]
    ```
 
    **参数说明：**
@@ -148,12 +162,14 @@
    - compression_flag 1 为使用压缩格式进行输出，0 不使用。
    - reducer_number reducer 作业的数目。默认值为5
 
+   ---
+
 6. 分布式层次聚类运算
 
    读入计算出的相似度矩阵，通过两步 MapReduce Job，分治地对数据集进行层次聚类。两步 Job 被合并为一个 workflow，其 Driver 类用法如下：
 
    ```bash
-   hadoop jar clustering.mst.Driver ${similarity_result_dir} ${document_count_file} ${output_file} [cluster_threshold] [reduce_number] [compression]
+   hadoop jar jar_name.jar clustering.mst.Driver ${similarity_result_dir} ${document_count_file} ${output_file} [cluster_threshold] [reduce_number] [compression]
    ```
 
    **参数说明：**
@@ -165,18 +181,28 @@
    * reduce_number reduce 作业数，增大此数目可增加运算并行度。默认为5
    * compression 距离计算结果是否采用压缩格式。默认为 1
 
+   ---
+
 7. 将聚类结果关联回原始商品数据
 
    共分为 3 步 Job，其 Workflow Driver 类使用方法如下：
 
    ```bash
-   hadoop jar xxx.jar clustering.link_back.WorkflowDriver ${init_input_dir} ${simhash_intermediate_dir} ${mst_dir} ${output_dir}
+   hadoop jar jar_name.jar clustering.link_back.WorkflowDriver ${init_input_dir} ${simhash_intermediate_dir} ${mst_dir} ${output_dir}
    ```
 
    **参数说明：**
 
-   * \${init_input_dir} 原始商品
-   * \${simhash_intermediate_dir} 
-   * \${mst_dir}
-   * \${output_dir}
+   * \${init_input_dir} 初始化时的商品数据在 HDFS 中的路径
+   * \${simhash_intermediate_dir} 预聚类步骤的中间结果在 HDFS 中的路径
+   * \${mst_dir} 聚类结果在 HDFS 中的路径
+   * \${output_dir} 输出文件在 HDFS 中的路径
+
+   输出文件格式说明：
+
+   ```
+   entry_id@@g_no	code_ts	g_name	g_model	[其他需要统计的数据]	聚类分组的组号
+   ```
+
+   其中 entry_id 和 g_no 中间用两个@号连接，作为一条商品数据的唯一标识符。每一列中间通过 tab 符（\t）分割。最后一列为聚类结果产生的分组号，同一个组号的商品数据属于同一个聚类组。可以通过 group by 组号，对 [其他需要统计的数据] 进行分组统计，例如进口单价、进口量、进口国别等。
 
