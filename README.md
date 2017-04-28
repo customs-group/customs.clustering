@@ -38,7 +38,7 @@
 
 7. 将聚类结果与原始商品数据进行关联
 
-   聚类算法将商品按照生成的id划分成不同的类别。要在后续工作中使用该分类信息，还需将聚类的结果与原始商品数据相关联。具体用例可见
+   聚类算法将商品按照生成的id划分成不同的类别。要在后续工作中使用该分类信息，还需将聚类的结果与原始商品数据相关联。关联的过程分为3步。第一步对原始商品数据进行处理，将 entry_id 与 g_no 相连，作为后续的 join key；第二步将预聚类步骤的中间结果与聚类结果相关联，使得在部分数据上进行的聚类结果能够映射到全部数据上；第三步将第一步和第二步的结果相关联，将聚类结果附加到原始数据上。具体用例可见 someone_else.LinkbackDemos 类。
 
 
 
@@ -150,7 +150,33 @@
 
 6. 分布式层次聚类运算
 
-   读入计算出的相似度矩阵，通过两步MapReduce
+   读入计算出的相似度矩阵，通过两步 MapReduce Job，分治地对数据集进行层次聚类。两步 Job 被合并为一个 workflow，其 Driver 类用法如下：
 
-7. ​
+   ```bash
+   hadoop jar clustering.mst.Driver ${similarity_result_dir} ${document_count_file} ${output_file} [cluster_threshold] [reduce_number] [compression]
+   ```
+
+   **参数说明：**
+
+   * \${similarity_result_dir} 距离计算得到的结果在 HDFS 中路径
+   * \${document_count_file} 文本数的计算结果在 HDFS 中的路径。计算文本数为计算单词权重时的中间计算结果，默认路径为 \${单词权重结果路径}/docCnt
+   * \${output_file} 输出文件在 HDFS 中路径
+   * cluster_threshold 聚类输出时的切断阈值。默认为 0.2。当聚类结果不理想时，应反复调试该参数
+   * reduce_number reduce 作业数，增大此数目可增加运算并行度。默认为5
+   * compression 距离计算结果是否采用压缩格式。默认为 1
+
+7. 将聚类结果关联回原始商品数据
+
+   共分为 3 步 Job，其 Workflow Driver 类使用方法如下：
+
+   ```bash
+   hadoop jar xxx.jar clustering.link_back.WorkflowDriver ${init_input_dir} ${simhash_intermediate_dir} ${mst_dir} ${output_dir}
+   ```
+
+   **参数说明：**
+
+   * \${init_input_dir} 原始商品
+   * \${simhash_intermediate_dir} 
+   * \${mst_dir}
+   * \${output_dir}
 

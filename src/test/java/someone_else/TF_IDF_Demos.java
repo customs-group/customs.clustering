@@ -27,7 +27,7 @@ public class TF_IDF_Demos {
 
     @Test
     public void defaultDemo() {
-        Driver driver = new Driver();
+        WorkflowDriver driver = new WorkflowDriver();
         String[] args = new String[2];
         args[0] = "/base/simhash/result";
         args[1] = "/base/tf_idf";
@@ -40,7 +40,7 @@ public class TF_IDF_Demos {
 
     @Test
     public void setWeight() {
-        Driver driver = new Driver();
+        WorkflowDriver driver = new WorkflowDriver();
         String[] args = new String[3];
         args[0] = "/base/simhash/result";
         args[1] = "/base/tf_idf2";

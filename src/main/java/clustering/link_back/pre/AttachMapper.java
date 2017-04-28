@@ -11,51 +11,46 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package clustering.link_back.step2;
+package clustering.link_back.pre;
 
-import clustering.link_back.io.Step2KeyWritable;
-import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
-import org.apache.hadoop.mapreduce.lib.input.FileSplit;
 
 import java.io.IOException;
 
 /**
- * Set the join key and join order for input data.
- *
- * @author edwardlol
- *         Created by edwardlol on 17-4-27.
+ * Created by edwardlol on 17-4-28.
  */
-public class SetKeyMapper extends Mapper<Text, Text, Step2KeyWritable, Text> {
+public class AttachMapper extends Mapper<Text, Text, Text, Text> {
     //~ Instance fields --------------------------------------------------------
 
-    private Step2KeyWritable taggedKey = new Step2KeyWritable();
+    private Text outputKey = new Text();
 
-    private int joinOrder;
+    private Text outputValue = new Text();
 
     //~ Methods ----------------------------------------------------------------
 
-    @Override
-    protected void setup(Context context) throws IOException, InterruptedException {
-        FileSplit fileSplit = (FileSplit) context.getInputSplit();
-        Path filePath = fileSplit.getPath();
-        this.joinOrder = filePath.toString().contains("step1") ? 1 : 2;
-    }
-
     /**
-     * @param key   entry_id@@g_no
-     * @param value cluster_id or content
+     * @param key   entry_id
+     * @param value g_no \t code_ts \t g_name \t g_name \t g_model [\t else]
      *              {@inheritDoc}
      */
     @Override
     public void map(Text key, Text value, Context context)
             throws IOException, InterruptedException {
 
-        this.taggedKey.set(key.toString(), this.joinOrder);
-        // (group_id,join_order) \t cluster_id or content
-        context.write(this.taggedKey, value);
+        String[] line = value.toString().split("\t");
+
+        this.outputKey.set(key.toString() + "@@" + line[0]);
+        StringBuilder sb = new StringBuilder();
+        for (int i = 1; i < line.length; i++) {
+            sb.append(line[i]).append('\t');
+        }
+        sb.deleteCharAt(sb.length() - 1);
+        this.outputValue.set(sb.toString());
+        // entry_id@@g_no \t g_name@@g_model
+        context.write(this.outputKey, this.outputValue);
     }
 }
 
-// End SetKeyMapper.java
+// End AttachMapper.java

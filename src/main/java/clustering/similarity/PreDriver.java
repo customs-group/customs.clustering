@@ -29,7 +29,7 @@ import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
 /**
- * Driver class to divide and distribute the inverted index.
+ * workflowDriver class to divide and distribute the inverted index.
  * In such way that the distance matrix can be calculated pararrel.
  *
  * @author edwardlol

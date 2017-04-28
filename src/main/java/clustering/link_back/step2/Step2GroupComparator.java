@@ -11,9 +11,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package clustering.link_back.step1;
+package clustering.link_back.step2;
 
-import clustering.link_back.io.Step1KeyWritable;
+import clustering.link_back.io.Step2KeyWritable;
 import org.apache.hadoop.io.WritableComparable;
 import org.apache.hadoop.io.WritableComparator;
 
@@ -25,21 +25,21 @@ import org.apache.hadoop.io.WritableComparator;
  * @author edwardlol
  *         Created by edwardlol on 2017/4/27.
  */
-public class Step1GroupingComparator extends WritableComparator {
+public class Step2GroupComparator extends WritableComparator {
     //~ Constructors -----------------------------------------------------------
 
-    public Step1GroupingComparator() {
-        super(Step1KeyWritable.class, true);
+    public Step2GroupComparator() {
+        super(Step2KeyWritable.class, true);
     }
 
     //~ Methods ----------------------------------------------------------------
 
     @Override
     public int compare(WritableComparable a, WritableComparable b) {
-        Step1KeyWritable taggedKey1 = (Step1KeyWritable) a;
-        Step1KeyWritable taggedKey2 = (Step1KeyWritable) b;
-        return taggedKey1.getJoinKey().compareTo(taggedKey2.getJoinKey());
+        Step2KeyWritable key1 = (Step2KeyWritable) a;
+        Step2KeyWritable key2 = (Step2KeyWritable) b;
+        return key1.getJoinKey().compareTo(key2.getJoinKey());
     }
 }
 
-// End Step1GroupingComparator.java
+// End Step2GroupComparator.java

@@ -11,7 +11,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 import clustering.simhash.SimHash;
 import org.junit.Test;
 
@@ -24,22 +23,7 @@ import java.util.Map;
  * Created by edwardlol on 2017/4/20.
  */
 public final class UtilTests {
-    //~ Static fields/initializers ---------------------------------------------
-
     //~ Methods ----------------------------------------------------------------
-
-    @Test
-    public void simhashTest() {
-        String aaa = "hello Lucy, welcome to China!";
-        SimHash simHash1 = SimHash.Builder.of(aaa).build();
-
-        for (int i = 0; i < 64; i++)
-            System.out.print(1);
-        System.out.println();
-        System.out.println(simHash1.getBinHashCode());
-
-    }
-
     @Test
     public void bench() {
         long start1 = System.currentTimeMillis();
@@ -85,19 +69,11 @@ public final class UtilTests {
         }
     }
 
-    @Test
-    public void formatTest() {
-        DecimalFormat format = new DecimalFormat("#0.00");
-        System.out.println(format.format(0.15134));
-    }
-
 
     @Test
     public void sbTest() {
-        String aaa = "aaa";
-        StringBuilder bbb = new StringBuilder(aaa);
-        bbb.append("bbb");
-        System.out.println(bbb.toString());
+        String path = "hdfs://localhost:9000/base/simhash/result/part-r-00000";
+        System.out.println(path.contains("simhash"));
     }
 }
 

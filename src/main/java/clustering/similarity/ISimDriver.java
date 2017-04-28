@@ -32,7 +32,7 @@ import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
 /**
- * Driver class for the last step of calculating
+ * workflowDriver class for the last step of calculating
  * distance matrix.
  *
  * @author edwardlol

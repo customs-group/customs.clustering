@@ -11,9 +11,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package clustering.link_back.step1;
+package clustering.link_back.step2;
 
-import clustering.link_back.io.Step1KeyWritable;
+import clustering.link_back.io.Step2KeyWritable;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
@@ -26,7 +26,7 @@ import java.io.IOException;
  * @author edwardlol
  *         Created by edwardlol on 17-4-27.
  */
-public class JoinReducer extends Reducer<Step1KeyWritable, Text, Text, IntWritable> {
+public class JoinReducer extends Reducer<Step2KeyWritable, Text, Text, IntWritable> {
     //~ Instance fields --------------------------------------------------------
 
     private Text outputKey = new Text();
@@ -36,23 +36,22 @@ public class JoinReducer extends Reducer<Step1KeyWritable, Text, Text, IntWritab
     //~ Methods ----------------------------------------------------------------
 
     /**
-     * @param key    group_id, join_order
-     * @param values cluster_id in mst result,
-     *               or entry_id@@g_no::g_name##g_model in simhash intermediate result.
+     * @param key    entry_id@@g_no, join_order
+     * @param values cluster_id in step1 result,
+     *               or g_name \t g_model [\t else] in pre result.
      *               {@inheritDoc}
      */
     @Override
-    public void reduce(Step1KeyWritable key, Iterable<Text> values, Context context)
+    public void reduce(Step2KeyWritable key, Iterable<Text> values, Context context)
             throws IOException, InterruptedException {
         // called on every group of keys
         for (Text value : values) {
             if (key.getTag().get() == 1) {
-                // mst result, value = cluster_id
+                // step result, value = cluster_id
                 this.outputValue.set(Integer.valueOf(value.toString()));
             } else {
-                String[] contents = value.toString().split("::");
-                this.outputKey.set(contents[0]);
-                // cluster_id, entry_id@@g_no::g_name##g_model
+                this.outputKey.set(key.getJoinKey().toString() + "\t" + value.toString());
+                // entry_id@@g_no \t g_name \t g_model [\t else], cluster_id
                 context.write(this.outputKey, this.outputValue);
             }
         }

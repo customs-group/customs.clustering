@@ -30,8 +30,8 @@ import static clustering.Utils.MapReduceUtils.runJobs;
  * @author edwardlol
  *         Created by edwardlol on 17-4-24.
  */
-public class Driver extends Configured implements Tool {
-    //~  Methods ---------------------------------------------------------------
+public class WorkflowDriver extends Configured implements Tool {
+    //~ Methods ---------------------------------------------------------------
 
     @Override
     public int run(String[] args) throws Exception {
@@ -118,8 +118,8 @@ public class Driver extends Configured implements Tool {
 
     public static void main(String[] args) throws Exception {
         Configuration configuration = new Configuration();
-        System.exit(ToolRunner.run(configuration, new Driver(), args));
+        System.exit(ToolRunner.run(configuration, new WorkflowDriver(), args));
     }
 }
 
-// End Driver.java
+// End WorkflowDriver.java

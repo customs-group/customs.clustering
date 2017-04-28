@@ -34,7 +34,7 @@ import org.apache.hadoop.util.ToolRunner;
 import java.net.URI;
 
 /**
- * Driver class to calculate the mst in a workflow.
+ * WorkflowDriver class to calculate the mst in a workflow.
  *
  * @author edwardlol
  *         Created by edwardlol on 2017/4/27.
@@ -46,7 +46,7 @@ public class Driver extends Configured implements Tool {
     public int run(String[] args) throws Exception {
         if (args.length < 3) {
             System.err.printf("usage: %s similarity_result_dir document_count_file output_dir " +
-                            "[split_number] [cluster_threshold]\n"
+                            "[cluster_threshold] [reduce_number] [compression]\n"
                     , getClass().getSimpleName());
             System.exit(1);
         }
@@ -60,14 +60,14 @@ public class Driver extends Configured implements Tool {
         conf = MapReduceUtils.initConf(conf);
 
         if (args.length > 3) {
-            conf.setInt("reduce.task.num", Integer.valueOf(args[3]));
-        } else {
-            conf.setInt("reduce.task.num", 5);
-        }
-        if (args.length > 4) {
-            conf.setDouble("final.threshold", Double.valueOf(args[4]));
+            conf.setDouble("final.threshold", Double.valueOf(args[3]));
         } else {
             conf.setDouble("final.threshold", 0.2d);
+        }
+        if (args.length > 4) {
+            conf.setInt("reduce.task.num", Integer.valueOf(args[4]));
+        } else {
+            conf.setInt("reduce.task.num", 5);
         }
 
         JobControl jobControl = new JobControl("mst jobs");
@@ -79,12 +79,12 @@ public class Driver extends Configured implements Tool {
 
         childJob.addCacheFile(docCntFile);
 
-        if (args.length > 5 && args[5].equals("1")) {
-            SequenceFileInputFormat.addInputPath(childJob, new Path(args[0]));
-            childJob.setInputFormatClass(SequenceFileAsTextInputFormat.class);
-        } else {
+        if (args.length > 5 && args[5].equals("0")) {
             FileInputFormat.addInputPath(childJob, new Path(args[0]));
             childJob.setInputFormatClass(KeyValueTextInputFormat.class);
+        } else {
+            SequenceFileInputFormat.addInputPath(childJob, new Path(args[0]));
+            childJob.setInputFormatClass(SequenceFileAsTextInputFormat.class);
         }
 
         FileOutputFormat.setOutputPath(childJob, step1_OutputDir);
@@ -145,4 +145,4 @@ public class Driver extends Configured implements Tool {
     }
 }
 
-// End Driver.java
+// End WorkflowDriver.java

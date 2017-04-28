@@ -13,6 +13,9 @@
  */
 
 /**
- * Created by edwardlol on 17-4-27.
+ * Join the pre output and step1 output.
+ *
+ * @author edwardlol
+ * Created by edwardlol on 17-4-28.
  */
-package clustering.link_back;
+package clustering.link_back.step2;

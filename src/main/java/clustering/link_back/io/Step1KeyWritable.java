@@ -22,7 +22,8 @@ import org.apache.hadoop.io.WritableComparable;
  * @author edwardlol
  *         Created by edwardlol on 17-4-27.
  */
-public class Step1KeyWritable extends AbstractKeyTag<IntWritable, IntWritable> implements WritableComparable<Step1KeyWritable> {
+public class
+Step1KeyWritable extends AbstractKeyTag<IntWritable, IntWritable> implements WritableComparable<Step1KeyWritable> {
     //~ Constructors -----------------------------------------------------------
 
     /**
@@ -43,10 +44,10 @@ public class Step1KeyWritable extends AbstractKeyTag<IntWritable, IntWritable> i
      * on the value of the tag field, ensuring the order we want.
      */
     @Override
-    public int compareTo(Step1KeyWritable step1KeyWritable) {
-        int compareValue = this.joinKey.compareTo(step1KeyWritable.getJoinKey());
+    public int compareTo(Step1KeyWritable other) {
+        int compareValue = this.joinKey.compareTo(other.getJoinKey());
         if (compareValue == 0) {
-            compareValue = this.tag.compareTo(step1KeyWritable.getTag());
+            compareValue = this.tag.compareTo(other.getTag());
         }
         return compareValue;
     }

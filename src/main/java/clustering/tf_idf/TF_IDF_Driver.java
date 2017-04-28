@@ -31,7 +31,7 @@ public class TF_IDF_Driver extends Configured implements Tool {
         return job.waitForCompletion(true) ? 0 : 1;
     }
 
-    public Job configJob(String[] args) throws Exception {
+    Job configJob(String[] args) throws Exception {
         if (args.length < 3) {
             System.err.printf("usage: %s doc_cnt_dir step2_output_dir final_output_dir\n",
                     getClass().getSimpleName());
@@ -41,7 +41,7 @@ public class TF_IDF_Driver extends Configured implements Tool {
         conf = initConf(conf);
 
         Job job = Job.getInstance(conf, "tf idf step3 job");
-        job.setJarByClass(Driver.class);
+        job.setJarByClass(WorkflowDriver.class);
 
         job.addCacheFile(new URI(args[0] + "/part-r-00000#docCnt"));
 

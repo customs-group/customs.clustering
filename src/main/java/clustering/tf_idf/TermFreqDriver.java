@@ -29,7 +29,7 @@ public class TermFreqDriver extends Configured implements Tool {
         return job.waitForCompletion(true) ? 0 : 1;
     }
 
-    public Job configJob(String[] args) throws Exception {
+    Job configJob(String[] args) throws Exception {
         if (args.length < 2) {
             System.err.printf("usage: %s step_1_output_dir step_2_output_dir " +
                     "[gname_weight]\n", getClass().getSimpleName());
@@ -42,7 +42,7 @@ public class TermFreqDriver extends Configured implements Tool {
         conf.setDouble("gname.weight", Double.valueOf(gnameWeight));
 
         Job job = Job.getInstance(conf, "tf idf step2 job");
-        job.setJarByClass(Driver.class);
+        job.setJarByClass(WorkflowDriver.class);
 
         FileInputFormat.addInputPath(job, new Path(args[0]));
         job.setInputFormatClass(KeyValueTextInputFormat.class);

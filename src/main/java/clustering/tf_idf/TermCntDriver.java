@@ -42,7 +42,7 @@ public class TermCntDriver extends Configured implements Tool {
         return job.waitForCompletion(true) ? 0 : 1;
     }
 
-    public Job configJob(String[] args) throws Exception {
+    Job configJob(String[] args) throws Exception {
         if (args.length < 2) {
             System.err.printf("usage: %s simhash_result_dir step_1_output_dir\n",
                     getClass().getSimpleName());

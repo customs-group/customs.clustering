@@ -14,6 +14,7 @@
 package clustering.link_back.step1;
 
 import clustering.link_back.io.Step1KeyWritable;
+import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.lib.input.FileSplit;
@@ -38,7 +39,8 @@ public class SetKeyMapper extends Mapper<Text, Text, Step1KeyWritable, Text> {
     @Override
     protected void setup(Context context) throws IOException, InterruptedException {
         FileSplit fileSplit = (FileSplit) context.getInputSplit();
-        this.joinOrder = Integer.parseInt(context.getConfiguration().get(fileSplit.getPath().getName()));
+        Path filePath = fileSplit.getPath();
+        this.joinOrder = filePath.toString().contains("mst") ? 1 : 2;
     }
 
     /**
@@ -52,7 +54,6 @@ public class SetKeyMapper extends Mapper<Text, Text, Step1KeyWritable, Text> {
             throws IOException, InterruptedException {
         int joinKey = Integer.valueOf(key.toString());
         this.taggedKey.set(joinKey, this.joinOrder);
-
         // (group_id,join_order) \t cluster_id or entry_id@@g_no::g_name##g_model
         context.write(this.taggedKey, value);
     }

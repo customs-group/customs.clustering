@@ -12,13 +12,12 @@ import java.io.IOException;
  * @author edwardlol
  *         Created by edwardlol on 17-4-27.
  */
-public abstract class AbstractKeyTag<K extends Writable, T extends Writable>
-        implements Writable {
+public abstract class AbstractKeyTag<K extends Writable, T extends Writable> implements Writable {
     //~ Instance fields --------------------------------------------------------
 
-    protected K joinKey;
+    K joinKey;
 
-    protected T tag;
+    T tag;
 
     //~ Methods ----------------------------------------------------------------
 

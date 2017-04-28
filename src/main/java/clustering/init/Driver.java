@@ -25,7 +25,7 @@ import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
 /**
- * Driver class for initialization jobs.
+ * WorkflowDriver class for initialization jobs.
  *
  * @author edwardlol
  *         Created by edwardlol on 17-4-21.
@@ -84,4 +84,4 @@ public class Driver extends Configured implements Tool {
     }
 }
 
-// End Driver.java
+// End WorkflowDriver.java

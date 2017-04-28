@@ -11,15 +11,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package clustering.link_back.step1;
+package clustering.link_back.pre;
 
 import clustering.Utils.MapReduceUtils;
-import clustering.link_back.JoinPartitioner;
-import clustering.link_back.io.Step1KeyWritable;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
@@ -29,13 +26,13 @@ import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
 /**
- * WorkflowDriver class to join the simhash intermediate output and the mst output.
+ * WorkflowDriver class for pre step.
  *
  * @author edwardlol
- *         Created by edwardlol on 2017/4/27.
+ *         Created by edwardlol on 17-4-28.
  */
 public class Driver extends Configured implements Tool {
-    //~  Methods ---------------------------------------------------------------
+    //~ Methods ---------------------------------------------------------------
 
     @Override
     public int run(String[] args) throws Exception {
@@ -44,8 +41,8 @@ public class Driver extends Configured implements Tool {
     }
 
     public Job configJob(String[] args) throws Exception {
-        if (args.length < 3) {
-            System.err.printf("usage: %s mst_result_dir simhash_result_file output_dir\n"
+        if (args.length < 2) {
+            System.err.printf("usage: %s input_dir output_dir\n"
                     , getClass().getSimpleName());
             System.exit(1);
         }
@@ -53,26 +50,17 @@ public class Driver extends Configured implements Tool {
         Configuration conf = getConf();
         conf = MapReduceUtils.initConf(conf);
 
-        Job job = Job.getInstance(conf, "link back step 1 job");
+        Job job = Job.getInstance(conf, "linkback pre step");
         job.setJarByClass(Driver.class);
 
         FileInputFormat.addInputPath(job, new Path(args[0]));
-        FileInputFormat.addInputPath(job, new Path(args[1]));
-
         job.setInputFormatClass(KeyValueTextInputFormat.class);
 
-        job.setMapperClass(SetKeyMapper.class);
-        job.setMapOutputKeyClass(Step1KeyWritable.class);
+        job.setMapperClass(AttachMapper.class);
+        job.setMapOutputKeyClass(Text.class);
         job.setMapOutputValueClass(Text.class);
 
-        job.setPartitionerClass(JoinPartitioner.class);
-        job.setGroupingComparatorClass(Step1GroupComparator.class);
-
-        job.setReducerClass(JoinReducer.class);
-        job.setOutputKeyClass(Text.class);
-        job.setOutputValueClass(IntWritable.class);
-
-        FileOutputFormat.setOutputPath(job, new Path(args[2]));
+        FileOutputFormat.setOutputPath(job, new Path(args[1]));
 
         return job;
     }

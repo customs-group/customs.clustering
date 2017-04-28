@@ -11,11 +11,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package clustering.link_back.step1;
+package clustering.link_back.step2;
 
 import clustering.Utils.MapReduceUtils;
 import clustering.link_back.JoinPartitioner;
-import clustering.link_back.io.Step1KeyWritable;
+import clustering.link_back.io.Step2KeyWritable;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
@@ -45,7 +45,7 @@ public class Driver extends Configured implements Tool {
 
     public Job configJob(String[] args) throws Exception {
         if (args.length < 3) {
-            System.err.printf("usage: %s mst_result_dir simhash_result_file output_dir\n"
+            System.err.printf("usage: %s pre_step_result_dir step1_result_dir output_dir\n"
                     , getClass().getSimpleName());
             System.exit(1);
         }
@@ -53,7 +53,7 @@ public class Driver extends Configured implements Tool {
         Configuration conf = getConf();
         conf = MapReduceUtils.initConf(conf);
 
-        Job job = Job.getInstance(conf, "link back step 1 job");
+        Job job = Job.getInstance(conf, "link back step 2 job");
         job.setJarByClass(Driver.class);
 
         FileInputFormat.addInputPath(job, new Path(args[0]));
@@ -61,14 +61,14 @@ public class Driver extends Configured implements Tool {
 
         job.setInputFormatClass(KeyValueTextInputFormat.class);
 
-        job.setMapperClass(SetKeyMapper.class);
-        job.setMapOutputKeyClass(Step1KeyWritable.class);
+        job.setMapperClass(clustering.link_back.step2.SetKeyMapper.class);
+        job.setMapOutputKeyClass(Step2KeyWritable.class);
         job.setMapOutputValueClass(Text.class);
 
         job.setPartitionerClass(JoinPartitioner.class);
-        job.setGroupingComparatorClass(Step1GroupComparator.class);
+        job.setGroupingComparatorClass(Step2GroupComparator.class);
 
-        job.setReducerClass(JoinReducer.class);
+        job.setReducerClass(clustering.link_back.step2.JoinReducer.class);
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(IntWritable.class);
 

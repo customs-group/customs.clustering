@@ -13,6 +13,9 @@
  */
 
 /**
- * Created by edwardlol on 17-4-27.
+ * Attach g_no to entry_id in the original file to make the linkback key.
+ *
+ * @author edwardlol
+ * Created by edwardlol on 17-4-28.
  */
-package clustering.link_back;
+package clustering.link_back.pre;

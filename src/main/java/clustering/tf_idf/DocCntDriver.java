@@ -33,7 +33,7 @@ import static clustering.Utils.MapReduceUtils.initConf;
  *         Created by edwardlol on 17-4-24.
  */
 public class DocCntDriver extends Configured implements Tool {
-    //~  Methods ---------------------------------------------------------------
+    //~ Methods ---------------------------------------------------------------
 
     @Override
     public int run(String[] args) throws Exception {
@@ -41,7 +41,7 @@ public class DocCntDriver extends Configured implements Tool {
         return job.waitForCompletion(true) ? 0 : 1;
     }
 
-    public Job configJob(String[] args) throws Exception {
+    Job configJob(String[] args) throws Exception {
         if (args.length < 2) {
             System.err.printf("usage: %s simhash_result_dir pre_step_output_dir\n",
                     getClass().getSimpleName());
@@ -52,7 +52,7 @@ public class DocCntDriver extends Configured implements Tool {
         conf = initConf(conf);
 
         Job job = Job.getInstance(conf, "tf idf pre job");
-        job.setJarByClass(Driver.class);
+        job.setJarByClass(WorkflowDriver.class);
 
         FileInputFormat.addInputPath(job, new Path(args[0]));
         FileOutputFormat.setOutputPath(job, new Path(args[1]));
